@@ -18,8 +18,7 @@
     <link rel="icon" href="minilogo.png" type="image/png">
 </head>
 <body>
-    <div class="luxury-bg"></div>
-
+     <div class="luxury-bg"></div>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-content">
@@ -27,7 +26,7 @@
                 <i class="fas fa-crown"></i>
                 <span>H-MOVIE</span>
             </div>
-        
+       
             <div class="nav-menu" id="navMenu">
                 <a href="#" class="nav-link active" data-tab="home" onclick="switchTab('home', event)">
                     <span>Trang Chủ</span>
@@ -41,7 +40,11 @@
                 <a href="#" class="nav-link" data-tab="phim-dang-chieu" onclick="switchTab('phim-dang-chieu', event)">
                     <span>Đang Chiếu</span>
                 </a>
-                <div style="position: relative;">
+                
+                <a href="#" class="nav-link special" data-tab="phim-phu-tho" onclick="switchTab('phim-phu-tho', event)">
+                    <span>Phim Phú Thọ</span>
+                </a>
+                <div class="dropdown-container">
                     <a href="#" class="nav-link" onclick="toggleDropdown('genreMenu', event)">
                         <span>Thể Loại</span>
                         <i class="fas fa-chevron-down" style="font-size: 0.75rem; margin-left: 0.3rem;"></i>
@@ -57,7 +60,7 @@
                         <a href="#" onclick="filterByGenre('gia-dinh', 'Gia Đình', event)">Gia Đình</a>
                     </div>
                 </div>
-                <div style="position: relative;">
+                <div class="dropdown-container">
                     <a href="#" class="nav-link" onclick="toggleDropdown('countryMenu', event)">
                         <span>Quốc Gia</span>
                         <i class="fas fa-chevron-down" style="font-size: 0.75rem; margin-left: 0.3rem;"></i>
@@ -71,7 +74,7 @@
                         <a href="#" onclick="filterByCountry('viet-nam', 'Việt Nam', event)">Việt Nam</a>
                     </div>
                 </div>
-                <div style="position: relative;">
+                <div class="dropdown-container">
                     <a href="#" class="nav-link" onclick="toggleDropdown('yearMenu', event)">
                         <span>Năm</span>
                         <i class="fas fa-chevron-down" style="font-size: 0.75rem; margin-left: 0.3rem;"></i>
@@ -86,7 +89,7 @@
                     </div>
                 </div>
             </div>
-        
+       
             <div class="search-container">
                 <div class="search-wrapper">
                     <i class="fas fa-search search-icon"></i>
@@ -101,19 +104,22 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+                <div class="suggestions" id="suggestions"></div>
             </div>
-        
+       
             <button class="menu-toggle" onclick="toggleMobileMenu()">
                 <i class="fas fa-bars"></i>
             </button>
+            <div class="mode-toggle" onclick="toggleMode()">
+                <i class="fas fa-moon"></i>
+            </div>
         </div>
     </nav>
-
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-slider" id="heroSlider"></div>
         <div class="hero-gradient"></div>
-    
+   
         <div class="hero-content">
             <div class="hero-label">
                 <i class="fas fa-star"></i>
@@ -132,23 +138,54 @@
                 </button>
             </div>
         </div>
-    
+   
         <div class="hero-indicators" id="heroIndicators"></div>
     </section>
-
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <select class="filter-select" id="genreFilter" onchange="applyFilters()">
+            <option value="">Thể loại</option>
+            <option value="hanh-dong">Hành Động</option>
+            <!-- Add more options -->
+        </select>
+        <select class="filter-select" id="countryFilter" onchange="applyFilters()">
+            <option value="">Quốc gia</option>
+            <option value="han-quoc">Hàn Quốc</option>
+            <!-- Add more options -->
+        </select>
+        <select class="filter-select" id="yearFilter" onchange="applyFilters()">
+            <option value="">Năm</option>
+            <option value="2025">2025</option>
+            <!-- Add more options -->
+        </select>
+        <select class="filter-select" id="sortFilter" onchange="applyFilters()">
+            <option value="">Sắp xếp</option>
+            <option value="newest">Mới nhất</option>
+            <option value="views">Lượt xem</option>
+        </select>
+    </div>
+    <!-- User Section -->
+    <div class="user-section">
+        <div class="user-tab active" data-user-tab="favorites">Yêu thích</div>
+        <div class="user-tab" data-user-tab="history">Lịch sử</div>
+        <div class="user-tab" data-user-tab="continue">Tiếp tục xem</div>
+    </div>
+    <div class="user-content active" id="favoritesContent"></div>
+    <div class="user-content" id="historyContent"></div>
+    <div class="user-content" id="continueContent"></div>
     <!-- Content -->
     <main class="content">
         <div class="section-header">
             <h2 class="section-title" id="sectionTitle">Phim Mới Cập Nhật</h2>
         </div>
-    
+   
         <div class="movies-grid" id="moviesGrid"></div>
-    
+   
         <div class="load-more" id="loadMore" style="display: none;">
             <div class="spinner"></div>
             <p style="color: var(--gray);">Đang tải thêm phim...</p>
         </div>
-    
+   
         <!-- Load More Button -->
         <div style="text-align: center; padding: 2rem 0; display: none;" id="loadMoreBtnContainer">
             <button class="btn btn-primary" onclick="loadMoreMovies()" id="loadMoreBtn">
@@ -157,13 +194,12 @@
             </button>
         </div>
     </main>
-
     <!-- Video Player Modal -->
     <div class="modal" id="playerModal">
         <button class="modal-close" onclick="closePlayer()">
             <i class="fas fa-times"></i>
         </button>
-    
+   
         <div class="modal-container">
             <div class="player-layout">
                 <div class="player-main" id="playerMain">
@@ -171,7 +207,7 @@
                         <i class="fas fa-spinner fa-spin" style="font-size: 3rem;"></i>
                     </div>
                 </div>
-            
+           
                 <div class="player-sidebar">
                     <div class="player-header">
                         <h3 class="player-title" id="playerTitle">Tên Phim</h3>
@@ -180,34 +216,45 @@
                             Xem thêm
                         </button>
                     </div>
-                
+               
                     <div class="episodes-section">
                         <h4 class="episodes-title">Danh Sách Tập</h4>
                         <div class="episodes-grid" id="episodesGrid"></div>
+                    </div>
+                    <div class="rating" id="ratingStars">
+                        <i class="fas fa-star star" data-rating="1"></i>
+                        <i class="fas fa-star star" data-rating="2"></i>
+                        <i class="fas fa-star star" data-rating="3"></i>
+                        <i class="fas fa-star star" data-rating="4"></i>
+                        <i class="fas fa-star star" data-rating="5"></i>
+                    </div>
+                    <div class="comments-section">
+                        <input class="comment-input" id="commentInput" placeholder="Viết bình luận...">
+                        <button class="btn btn-primary" onclick="addComment()">Gửi</button>
+                        <div id="commentsList"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- AI Assistant -->
     <div class="ai-assistant">
         <button class="ai-toggle" onclick="toggleAI()" aria-label="Mở trợ lý AI">
             <i class="fas fa-robot"></i>
         </button>
-    
+   
         <div class="ai-chat" id="aiChat">
             <div class="ai-header">
                 <i class="fas fa-sparkles"></i>
                 <span>Trợ Lý AI Premium</span>
             </div>
-        
+       
             <div class="ai-messages" id="aiMessages">
                 <div class="ai-message bot">
                     Xin chào! Tôi là trợ lý AI của H-Movie Elite. Tôi có thể giúp bạn tìm phim phù hợp với sở thích. Bạn muốn xem thể loại gì?
                 </div>
             </div>
-        
+       
             <div class="ai-input-wrapper">
                 <input
                     type="text"
@@ -222,10 +269,9 @@
             </div>
         </div>
     </div>
-
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-brand">H-MOVIE ELITE</div>
+        <div class="footer-brand">H-CINEMA</div>
         <p class="footer-text">© 2026 H-Movie Elite. Thiết kế bởi Hưng</p>
         <p class="footer-text" style="margin-top: 0.5rem;">Trải nghiệm điện ảnh đẳng cấp thế giới</p>
     </footer>
